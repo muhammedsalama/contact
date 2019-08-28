@@ -30,7 +30,7 @@
     export default {
         data: function () {
             return {
-                edit: true,
+                edit: false,
                 list: [],
                 contact: {
                     id: '',
@@ -42,16 +42,39 @@
         },
         mounted: function () {
             console.log('Contacts Component loaded..');
+            this.fetchContactList();
         },
 
         methods: {
+            fetchContactList: function () {
+                console.log('Fetching contacts ..');
+                axios.get('api/contacts')
+                    .then((response) => {
+                        console.log(response.data)
+                        this.list = response.data
+                    }).catch((error) => {
+                    console.log(error)
+                })
+            },
+
             createContact: function () {
                 console.log('Creating Contact..');
+
+                axios.post('api/contact/create', Object.assign({}, this.contact))
+                    .then(() => {
+                        this.contact.name = '';
+                        this.contact.email = '';
+                        this.contact.phone = '';
+                        this.edit = false;
+                        this.fetchContactList();
+                    }).catch((error) => {
+                    console.log(error)
+                })
                 return;
             },
 
             updateContact: function (id) {
-                console.log('Updating Contact '+id+'..');
+                console.log('Updating Contact ' + id + '..');
                 return;
             }
 
