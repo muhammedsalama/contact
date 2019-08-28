@@ -1,7 +1,5 @@
 <template>
     <div>
-        <h1>Contacts</h1>
-
         <form action="#" @submit.prevent="edit ? updateContact(contact.id) : createContact()">
             <div class="form-group">
                 <label for="contact">Name</label>
@@ -22,6 +20,19 @@
             </div>
 
         </form>
+
+        <h1>Contacts</h1>
+
+        <ul class="list-group">
+            <li v-for="contact in list" class="list-group-item">
+                <strong> {{contact.name}} </strong> - {{contact.email}} - {{contact.phone}}
+                <div class="float-right">
+                    <button @click="showContact(contact.id)" class="btn btn-info btn-sm">Edit</button>
+                    <button @click="deleteContact(contact.id)" class="btn btn-danger btn-sm">Delete</button>
+                </div>
+
+            </li>
+        </ul>
 
     </div>
 </template>
@@ -54,7 +65,7 @@
                         this.list = response.data
                     }).catch((error) => {
                     console.log(error)
-                })
+                });
             },
 
             createContact: function () {
@@ -69,15 +80,43 @@
                         this.fetchContactList();
                     }).catch((error) => {
                     console.log(error)
-                })
-                return;
+                });
+
+            },
+
+            showContact: function (id) {
+                axios.get('api/contacts/' + id).then((response) => {
+                    this.contact.id = response.data.id;
+                    this.contact.name = response.data.name;
+                    this.contact.email = response.data.email;
+                    this.contact.phone = response.data.phone;
+                });
+                this.edit = true;
+            },
+
+            deleteContact: function (id) {
+                axios.delete('api/contact/delete/' + id)
+                    .then((response) => {
+                        this.fetchContactList()
+                    })
+                    .catch((error) => {
+                        console.log(error)
+                    })
             },
 
             updateContact: function (id) {
                 console.log('Updating Contact ' + id + '..');
-                return;
+                axios.patch('api/contact/update/' + id, Object.assign({}, this.contact))
+                    .then(() => {
+                        this.contact.name = '';
+                        this.contact.email = '';
+                        this.contact.phone = '';
+                        this.edit = false;
+                        this.fetchContactList();
+                    }).catch((error) => {
+                    console.log(error)
+                });
             }
-
         }
     }
 </script>

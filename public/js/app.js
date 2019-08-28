@@ -1725,6 +1725,17 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -1768,11 +1779,41 @@ __webpack_require__.r(__webpack_exports__);
       })["catch"](function (error) {
         console.log(error);
       });
-      return;
+    },
+    showContact: function showContact(id) {
+      var _this3 = this;
+
+      axios.get('api/contacts/' + id).then(function (response) {
+        _this3.contact.id = response.data.id;
+        _this3.contact.name = response.data.name;
+        _this3.contact.email = response.data.email;
+        _this3.contact.phone = response.data.phone;
+      });
+      this.edit = true;
+    },
+    deleteContact: function deleteContact(id) {
+      var _this4 = this;
+
+      axios["delete"]('api/contact/delete/' + id).then(function (response) {
+        _this4.fetchContactList();
+      })["catch"](function (error) {
+        console.log(error);
+      });
     },
     updateContact: function updateContact(id) {
+      var _this5 = this;
+
       console.log('Updating Contact ' + id + '..');
-      return;
+      axios.patch('api/contact/update/' + id, Object.assign({}, this.contact)).then(function () {
+        _this5.contact.name = '';
+        _this5.contact.email = '';
+        _this5.contact.phone = '';
+        _this5.edit = false;
+
+        _this5.fetchContactList();
+      })["catch"](function (error) {
+        console.log(error);
+      });
     }
   }
 });
@@ -37074,8 +37115,6 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
-    _c("h1", [_vm._v("Contacts")]),
-    _vm._v(" "),
     _c(
       "form",
       {
@@ -37202,6 +37241,53 @@ var render = function() {
           )
         ])
       ]
+    ),
+    _vm._v(" "),
+    _c("h1", [_vm._v("Contacts")]),
+    _vm._v(" "),
+    _c(
+      "ul",
+      { staticClass: "list-group" },
+      _vm._l(_vm.list, function(contact) {
+        return _c("li", { staticClass: "list-group-item" }, [
+          _c("strong", [_vm._v(" " + _vm._s(contact.name) + " ")]),
+          _vm._v(
+            " - " +
+              _vm._s(contact.email) +
+              " - " +
+              _vm._s(contact.phone) +
+              "\n            "
+          ),
+          _c("div", { staticClass: "float-right" }, [
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-info btn-sm",
+                on: {
+                  click: function($event) {
+                    return _vm.showContact(contact.id)
+                  }
+                }
+              },
+              [_vm._v("Edit")]
+            ),
+            _vm._v(" "),
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-danger btn-sm",
+                on: {
+                  click: function($event) {
+                    return _vm.deleteContact(contact.id)
+                  }
+                }
+              },
+              [_vm._v("Delete")]
+            )
+          ])
+        ])
+      }),
+      0
     )
   ])
 }
