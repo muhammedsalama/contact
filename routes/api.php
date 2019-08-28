@@ -17,7 +17,7 @@ Route::group(['middleware'=>'api'],function (){
     //ur routes
     Route::get('contacts','ContactController@index');
     Route::get('contacts/{id}','ContactController@show');
-    Route::post('contact/create','ContactController@store');
+    Route::post('contact/create','ContactController@store')->name('create_contact');
     Route::patch('contact/update/{id}','ContactController@update');
     Route::delete('contact/delete/{id}','ContactController@delete');
 
