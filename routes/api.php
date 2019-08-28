@@ -13,6 +13,18 @@ use Illuminate\Http\Request;
 |
 */
 
+Route::group(['middleware'=>'api'],function (){
+    //ur routes
+    Route::get('contacts','ContactController@index');
+    Route::get('contacts/{id}','ContactController@show');
+    Route::post('contact/create','ContactController@store');
+    Route::patch('contact/update/{id}','ContactController@update');
+    Route::delete('contact/delete/{id}','ContactController@delete');
+
+
+});
+
+
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
